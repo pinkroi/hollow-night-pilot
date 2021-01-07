@@ -31,12 +31,37 @@ public class ReverseLinkedList {
             list.add(head);
             head = head.next;
         }
-        int len = list.size();
-        for (int i = len - 1; i > 0; i--) {
+        for (int i = list.size() - 1; i > 0; i--) {
             list.get(i).next = list.get(i - 1);
         }
         list.get(0).next = null;
-        return list.get(len - 1);
+        return list.get(list.size() - 1);
+    }
+
+    public static ListNode reverseBetween(ListNode head, int m, int n) {
+        if (null == head) {
+            return null;
+        }
+        List<ListNode> list = new ArrayList<>();
+        while (null != head) {
+            list.add(head);
+            head = head.next;
+        }
+        List<ListNode> pre = list.subList(0, m-1);
+        List<ListNode> middle = list.subList(m-1, n);
+        List<ListNode> suffix = list.subList(n, list.size());
+        for (int i = middle.size() - 1; i > 0; i--) {
+            middle.get(i).next = middle.get(i - 1);
+        }
+        if (!pre.isEmpty()) {
+            pre.get(pre.size() - 1).next = middle.get(middle.size() - 1);
+        }
+        if (!suffix.isEmpty()) {
+            middle.get(0).next = suffix.get(0);
+        } else {
+            middle.get(0).next = null;
+        }
+        return pre.isEmpty() ? middle.get(middle.size() - 1) : pre.get(0);
     }
 
     public static void main(String[] args) {
@@ -50,6 +75,6 @@ public class ReverseLinkedList {
         node3.next = node4;
         node4.next = node5;
         node5.next = null;
-        ListNode reversedNode = reverseList(node1);
+        ListNode reversedNode = reverseBetween(node1, 2, 4);
     }
 }
